@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   fetchStrictReceiveQuote,
   USDC,
@@ -18,6 +19,7 @@ export function useContactFeeQuote(
   enabled: boolean,
   asset: FeeAsset = USDC,
 ) {
+  const t = useTranslations('scout.contact_modal');
   const [quote, setQuote] = useState<PathQuote | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,12 +32,12 @@ export function useContactFeeQuote(
       setQuote(await fetchStrictReceiveQuote(feeXlm, asset));
     } catch (err) {
       setQuote(null);
-      setError(err instanceof Error ? err.message : 'Could not fetch a quote');
+      setError(err instanceof Error ? err.message : t('quote_error'));
     } finally {
       setLoading(false);
       setNow(Date.now());
     }
-  }, [feeXlm, asset]);
+  }, [feeXlm, asset, t]);
 
   useEffect(() => {
     if (enabled) refresh();
